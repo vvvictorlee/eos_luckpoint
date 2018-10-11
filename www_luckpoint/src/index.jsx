@@ -1,16 +1,20 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import EOSJS from 'eosjs'
-
-let contract_name = 'luckpoint.co'
+import EOSJSApi from 'eosjs'
+import EOSClient from './eos-client';
+let contract_name = 'luckpointio'
 let account_name = 'banker'
+
 
 const EOSJS_CONFIG = {
   contractName: contract_name,    // 合约名字
   contractSender: account_name,   // 执行合约的账户 (需要与私钥对应)
   clientConfig: {
-    keyProvider: ['5JcziTgwUhQgKyvmvc4ygEPGonQPVrBYNTwezAg5UuJ7djyVDWQ'], // 账号对应的私钥
-    httpEndpoint: 'http://127.0.0.1:8888' // EOS节点程序的http终端
+    chainId: 'a4fe43c897279a677025624555f3835b949f995f87923c97f0392dcff835bfd0',
+    keyProvider: '5KE4wq7CDkVMPTCxXz5eEA4fqpyMMqcgAfAVHAZJgbe8CgMYbeE', // 账号对应的私钥
+    httpEndpoint: 'http://127.0.0.1:8888', // EOS节点程序的http终端
+    broadcast: true,
+  sign: true
   }
 }
 
@@ -52,7 +56,16 @@ class LuckPoint extends React.Component {
     this.gameprops.gameDataList = []
 
     // 读取游戏数据
-    let eosjs = EOSJS.Localnet(EOSJS_CONFIG.clientConfig)
+    // let eosClient = EOSJSApi.Localnet(EOSJS_CONFIG.clientConfig)
+    // eosClient.contract(EOSJS_CONFIG.contractName)
+    // .then((contract) => {
+    //   console.log('client_updateGameData::' + contract_name + '合约加载成功！')
+    //   // contract.wish(EOS_CONFIG.contractReceiver, { authorization: [EOS_CONFIG.contractReceiver] })
+    //   //   .then((res) => { this.setState({ pingStatus: 'success' }) })
+    //   //   .catch((err) => { this.setState({ pingStatus: 'fail' }); console.log(err) })
+    // })
+
+    let eosjs = EOSJSApi.Localnet(EOSJS_CONFIG.clientConfig);//EOSJSApi(EOSJS_CONFIG.clientConfig)
     eosjs.contract(contract_name)
       .then((contract) => {
         console.log('_updateGameData::' + contract_name + '合约加载成功！')
@@ -110,7 +123,7 @@ class LuckPoint extends React.Component {
     this._showLoading(true, '正在创建游戏... ...')
 
     let _sender = account_name
-    let eosjs = EOSJS.Localnet(EOSJS_CONFIG.clientConfig)
+    let eosjs = EOSJSApi.Localnet(EOSJS_CONFIG.clientConfig)
     eosjs.contract(EOSJS_CONFIG.contractName)
       .then((contract) => {
         console.log('_createGame::加载合约成功！')
@@ -133,7 +146,7 @@ class LuckPoint extends React.Component {
     this._showLoading(true, '玩家' + play_id + '正在开牌 ...')
 
     let _sender = account_name
-    let eosjs = EOSJS.Localnet(EOSJS_CONFIG.clientConfig)
+    let eosjs = EOSJSApi.Localnet(EOSJS_CONFIG.clientConfig)
     eosjs.contract(EOSJS_CONFIG.contractName)
       .then((contract) => {
         console.log('_playerOpenCard::加载合约成功！')
